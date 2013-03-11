@@ -19,6 +19,14 @@ class Projection():
 def get_options():
     parser = argparse.ArgumentParser(description="Average MLB projections "
                 "and rank the players in given stats.")
+    parser.add_argument('-o', '--offense', action='append',
+                        help='Add offensive stat')
+    parser.add_argument('-p', '--pitching', action='append',
+                        help='Add pitching stat')
+    parser.add_argument('-t', '--playing-time', action='append',
+                        help='Add playing time projection')
+    parser.add_argument('projections', nargs='+',
+                        help='Projections to average')
     args = parser.parse_args()
 
 if __name__ == '__main__':
