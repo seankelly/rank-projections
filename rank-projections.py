@@ -4,6 +4,9 @@ import argparse
 import csv
 from collections import namedtuple
 
+Batter = namedtuple('Batter', 'x')
+Pitcher = namedtuple('Pitcher', 'x')
+
 class Projection():
     def __init__(self, file, *stats):
         self.file = file
