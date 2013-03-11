@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+from collections import namedtuple
 
 class Projection():
     def __init__(self, file, *stats):
