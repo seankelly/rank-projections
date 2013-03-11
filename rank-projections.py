@@ -14,7 +14,9 @@ class Projection():
 
 
 def get_options():
-    pass
+    parser = argparse.ArgumentParser(description="Average MLB projections "
+                "and rank the players in given stats.")
+    args = parser.parse_args()
 
 if __name__ == '__main__':
-    pass
+    args = get_options()
