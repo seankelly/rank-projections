@@ -12,5 +12,9 @@ class Projection():
     def _load_players(self):
         pass
 
+
+def get_options():
+    pass
+
 if __name__ == '__main__':
     pass
