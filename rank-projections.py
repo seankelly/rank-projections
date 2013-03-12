@@ -30,6 +30,7 @@ def get_options():
     parser.add_argument('projections', nargs='+',
                         help='Projections to average')
     args = parser.parse_args()
+    return args
 
 if __name__ == '__main__':
     args = get_options()
