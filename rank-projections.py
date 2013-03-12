@@ -57,6 +57,7 @@ def run():
         raise ValueError, "Pitching stats not specified."
 
     update_namedtuples(batting_stats, pitching_stats)
+    load_projections(batting_stats, pitching_stats, args.projections)
 
 if __name__ == '__main__':
     run()
