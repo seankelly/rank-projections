@@ -15,6 +15,14 @@ class Projection():
     def _load_players(self):
         pass
 
+def load_projections():
+    pass
+
+def average_projections(projections):
+    pass
+
+def rank_players(batting, pitching, projections):
+    pass
 
 def get_options():
     parser = argparse.ArgumentParser(description="Average MLB projections "
