@@ -40,5 +40,14 @@ def get_options():
     args = parser.parse_args()
     return args
 
-if __name__ == '__main__':
+def run():
     args = get_options()
+    batting_stats = args.batting
+    pitching_stats = args.pitching
+    if batting_stats is None:
+        raise ValueError, "Batting stats not specified."
+    if pitching_stats is None:
+        raise ValueError, "Pitching stats not specified."
+
+if __name__ == '__main__':
+    run()
