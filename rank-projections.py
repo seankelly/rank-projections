@@ -8,7 +8,7 @@ Batter = namedtuple('Batter', 'x')
 Pitcher = namedtuple('Pitcher', 'x')
 
 class Projection():
-    def __init__(self, file, *stats):
+    def __init__(self, file, batting, pitching):
         self.file = file
         self.players = []
 
@@ -20,6 +20,10 @@ def update_namedtuples(batting, pitching):
     Batter = namedtuple('Batter', batting)
     Pitcher = namedtuple('Pitcher', pitching)
 
+def load_projections(batting, pitching, files):
+    projections = []
+    for file in files:
+        projections.append(Projection(file, batting, pitching))
 
 def average_projections(projections):
     pass
