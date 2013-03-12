@@ -15,8 +15,11 @@ class Projection():
     def _load_players(self):
         pass
 
-def load_projections():
-    pass
+def update_namedtuples(batting, pitching):
+    global Batter, Pitcher
+    Batter = namedtuple('Batter', batting)
+    Pitcher = namedtuple('Pitcher', pitching)
+
 
 def average_projections(projections):
     pass
@@ -48,6 +51,8 @@ def run():
         raise ValueError, "Batting stats not specified."
     if pitching_stats is None:
         raise ValueError, "Pitching stats not specified."
+
+    update_namedtuples(batting_stats, pitching_stats)
 
 if __name__ == '__main__':
     run()
