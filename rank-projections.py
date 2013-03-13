@@ -10,8 +10,8 @@ Pitcher = namedtuple('Pitcher', 'x')
 class Projection():
     def __init__(self, file, batting, pitching):
         self.file = file
-        self.batting = set(batting)
-        self.pitching = set(pitching)
+        self.batting = batting
+        self.pitching = pitching
         self.players = []
         self.is_batting = False
         self.is_pitching = False
@@ -54,8 +54,8 @@ def get_options():
 
 def run():
     args = get_options()
-    batting_stats = args.batting.split(',')
-    pitching_stats = args.pitching.split(',')
+    batting_stats = set(args.batting.upper().split(','))
+    pitching_stats = set(args.pitching.upper().split(','))
     if batting_stats is None:
         raise ValueError, "Batting stats not specified."
     if pitching_stats is None:
