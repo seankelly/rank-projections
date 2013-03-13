@@ -19,6 +19,28 @@ class Projection():
 
     def _load_players(self):
         is_batting, is_pitching = False, False
+        in_body = False
+        csv_file = csv.reader(open(self.file))
+        for row in csv_file:
+            if in_body:
+                pass
+            else:
+                in_body = True
+                headers = set(row)
+                num_batting = len(self.batting & headers)
+                num_pitching = len(self.pitching & headers)
+                if num_batting > num_pitching:
+                    is_batting = True
+                    self._create_mapping(self.batting)
+                elif num_pitching > num_batting:
+                    is_pitching = True
+                    self._create_mapping(self.pitching)
+                else:
+                    print("Unable to determine how to parse {0}".format(self.file))
+                    break
+
+    def _create_mapping(self, stats):
+        pass
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
