@@ -31,16 +31,30 @@ class Projection():
                 num_pitching = len(self.pitching & headers)
                 if num_batting > num_pitching:
                     is_batting = True
-                    self._create_mapping(self.batting)
+                    self._create_mapping(self.batting, headers)
                 elif num_pitching > num_batting:
                     is_pitching = True
-                    self._create_mapping(self.pitching)
+                    self._create_mapping(self.pitching, headers)
                 else:
                     print("Unable to determine how to parse {0}".format(self.file))
                     break
 
-    def _create_mapping(self, stats):
-        pass
+    def _create_mapping(self, stats, headers):
+        """
+        Generate a best-fit mapping for any stats missing from the projection
+        file.
+        """
+        mapping = {}
+        # Start with a pass-through of stats that were found.
+        for stat in (stats & headers):
+            mapping[stat] = lambda x: x
+        missing_stats = stats - headers
+        for stat in missing_stats:
+            # If can't find runs and this is a pitching file, then assume 8% of
+            # runs are unearned.
+            if stat == 'R':
+                if self.is_pitching:
+                    mapping[stat] = lambda x: x/1.08
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
