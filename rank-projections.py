@@ -41,9 +41,9 @@ def get_options():
                 "and rank the players in given stats.")
     parser.add_argument('-o', '--output',
                         help='Save ranked players')
-    parser.add_argument('-b', '--batting', action='append',
+    parser.add_argument('-b', '--batting',
                         help='Add batting stat')
-    parser.add_argument('-p', '--pitching', action='append',
+    parser.add_argument('-p', '--pitching',
                         help='Add pitching stat')
     parser.add_argument('-t', '--playing-time', action='append',
                         help='Add playing time projection')
@@ -54,8 +54,8 @@ def get_options():
 
 def run():
     args = get_options()
-    batting_stats = args.batting
-    pitching_stats = args.pitching
+    batting_stats = args.batting.split(',')
+    pitching_stats = args.pitching.split(',')
     if batting_stats is None:
         raise ValueError, "Batting stats not specified."
     if pitching_stats is None:
