@@ -13,9 +13,12 @@ class Projection():
         self.batting = set(batting)
         self.pitching = set(pitching)
         self.players = []
+        self.is_batting = False
+        self.is_pitching = False
+        self._load_players()
 
     def _load_players(self):
-        pass
+        is_batting, is_pitching = False, False
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
