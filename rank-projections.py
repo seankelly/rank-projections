@@ -10,6 +10,8 @@ Pitcher = namedtuple('Pitcher', 'x')
 class Projection():
     def __init__(self, file, batting, pitching):
         self.file = file
+        self.batting = set(batting)
+        self.pitching = set(pitching)
         self.players = []
 
     def _load_players(self):
