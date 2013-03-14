@@ -61,11 +61,21 @@ class Projection():
             mapping[stat] = lambda r: r[header_map[stat]]
         missing_stats = stats - headers
         for stat in missing_stats:
-            # If can't find runs and this is a pitching file, then assume 8% of
-            # runs are unearned.
             if stat == 'R':
-                if self.is_pitching:
-                    mapping[stat] = lambda x: x/1.08
+                # If can't find runs and this is a pitching file, then assume
+                # 8% of runs are unearned. If a batting file, then this is a
+                # rather crappy projection if runs are not included.
+                if self.is_pitching and 'ER' in headers:
+                    mapping[stat] = lambda r: r[header_map['ER']]*1.08
+            elif stat == 'NSB':
+                # If SB and CS are available, use that.
+                if 'SB' in headers and 'CS' in headers:
+                    mapping[stat] = lambda r: (r[header_map['SB']] -
+                                               r[header_map['CS']])
+                # If just SB available, then assume a 25% caught rate. This
+                # means a third of SB's will be 'lost'.
+                elif 'SB' in headers:
+                    mapping[stat] = lambda r: r[header_map['SB']]*0.333
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
