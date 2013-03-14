@@ -76,6 +76,8 @@ class Projection():
                 # means a third of SB's will be 'lost'.
                 elif 'SB' in headers:
                     mapping[stat] = lambda r: r[header_map['SB']]*0.333
+            else:
+                mapping[stat] = lambda r: None
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
