@@ -78,6 +78,7 @@ class Projection():
                     mapping[stat] = lambda r: r[header_map['SB']]*0.333
             else:
                 mapping[stat] = lambda r: None
+        self.mapping = mapping
 
 def update_namedtuples(batting, pitching):
     global Batter, Pitcher
