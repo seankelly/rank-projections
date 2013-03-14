@@ -15,6 +15,7 @@ class Projection():
         self.players = []
         self.is_batting = False
         self.is_pitching = False
+        self.id_column = None
         self._load_players()
 
     def _load_players(self):
@@ -66,6 +67,12 @@ class Projection():
         header_map = {}
         for i, stat in enumerate(row):
             header_map[stat] = i
+        # Try to find the column to use to identify players. When downloading
+        # from FanGraphs, the playerid column is automatically added.
+        for id_col in ['playerid', 'Name', 'name']:
+            if id_col in header_map:
+                self.id_column = header_map[id_col]
+
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
