@@ -26,25 +26,31 @@ class Projection():
                 pass
             else:
                 in_body = True
-                headers = set(row)
-                num_batting = len(self.batting & headers)
-                num_pitching = len(self.pitching & headers)
-                if num_batting > num_pitching:
-                    is_batting = True
-                    self._create_mapping(self.batting, headers)
-                elif num_pitching > num_batting:
-                    is_pitching = True
-                    self._create_mapping(self.pitching, headers)
-                else:
-                    print("Unable to determine how to parse {0}".format(self.file))
+                if not self._classify_file(row):
                     break
 
-    def _create_mapping(self, stats, headers):
+    def _classify_file(self, row):
+        headers = set(row)
+        num_batting = len(self.batting & headers)
+        num_pitching = len(self.pitching & headers)
+        if num_batting > num_pitching:
+            self.is_batting = True
+            self._create_mapping(self.batting, row)
+        elif num_pitching > num_batting:
+            self.is_pitching = True
+            self._create_mapping(self.pitching, row)
+        else:
+            print("Unable to determine how to parse {0}".format(self.file))
+            return False
+        return True
+
+    def _create_mapping(self, stats, row):
         """
         Generate a best-fit mapping for any stats missing from the projection
         file.
         """
         mapping = {}
+        headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
             mapping[stat] = lambda x: x
