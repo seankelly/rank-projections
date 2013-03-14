@@ -2,10 +2,7 @@
 
 import argparse
 import csv
-from collections import namedtuple
 
-Batter = namedtuple('Batter', 'x')
-Pitcher = namedtuple('Pitcher', 'x')
 
 class Projection():
     def __init__(self, file, batting, pitching):
@@ -33,15 +30,15 @@ class Projection():
                 id_col = self.id_column
 
     def map_stats(self, row):
-        stats = []
+        stats = {}
         if self.is_batting:
-            for stat in self.batting:
-                stats.append(self.mapping[stat](row))
-            return Batter(*stats)
+            stat_list = self.batting
         elif self.is_pitching:
-            for stat in self.pitching:
-                stats.append(self.mapping[stat](row))
-            return Pitcher(*stats)
+            stat_list = self.pitching
+        for stat in stat_list:
+            stats[stat] = self.mapping[stat](row)
+        return stats
+
 
     def _classify_file(self, row):
         headers = set(row)
@@ -101,11 +98,6 @@ class Projection():
                 mapping[stat] = lambda r: None
         self.mapping = mapping
 
-def update_namedtuples(batting, pitching):
-    global Batter, Pitcher
-    Batter = namedtuple('Batter', batting)
-    Pitcher = namedtuple('Pitcher', pitching)
-
 def load_projections(batting, pitching, files):
     projections = []
     for file in files:
@@ -150,7 +142,6 @@ def run():
     if pitching_stats is None:
         raise ValueError, "Pitching stats not specified."
 
-    update_namedtuples(batting_stats, pitching_stats)
     projections = load_projections(batting_stats, pitching_stats, args.projections)
     averaged = average_projections(projections)
 
