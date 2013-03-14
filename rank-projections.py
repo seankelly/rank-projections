@@ -12,7 +12,7 @@ class Projection():
         self.file = file
         self.batting = batting
         self.pitching = pitching
-        self.players = []
+        self.players = {}
         self.is_batting = False
         self.is_pitching = False
         self.id_column = None
@@ -24,11 +24,13 @@ class Projection():
         csv_file = csv.reader(open(self.file))
         for row in csv_file:
             if in_body:
-                self.players.append(self.map_stats(row))
+                self.players[row[id_col]] = self.map_stats(row)
             else:
                 in_body = True
                 if not self._classify_file(row):
                     break
+                # Set after the file has been classified.
+                id_col = self.id_column
 
     def map_stats(self, row):
         stats = []
@@ -72,6 +74,7 @@ class Projection():
         for id_col in ['playerid', 'Name', 'name']:
             if id_col in header_map:
                 self.id_column = header_map[id_col]
+                break
 
         headers = set(row)
         # Start with a pass-through of stats that were found.
