@@ -23,11 +23,22 @@ class Projection():
         csv_file = csv.reader(open(self.file))
         for row in csv_file:
             if in_body:
-                pass
+                self.players.append(self.map_stats(row))
             else:
                 in_body = True
                 if not self._classify_file(row):
                     break
+
+    def map_stats(self, row):
+        stats = []
+        if self.is_batting:
+            for stat in self.batting:
+                stats.append(self.mapping[stat](row))
+            return Batter(*stats)
+        elif self.is_pitching:
+            for stat in self.pitching:
+                stats.append(self.mapping[stat](row))
+            return Pitcher(*stats)
 
     def _classify_file(self, row):
         headers = set(row)
