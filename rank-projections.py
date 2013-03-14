@@ -110,6 +110,7 @@ def load_projections(batting, pitching, files):
     projections = []
     for file in files:
         projections.append(Projection(file, batting, pitching))
+    return projections
 
 def average_projections(projections):
     pass
@@ -143,7 +144,8 @@ def run():
         raise ValueError, "Pitching stats not specified."
 
     update_namedtuples(batting_stats, pitching_stats)
-    load_projections(batting_stats, pitching_stats, args.projections)
+    projections = load_projections(batting_stats, pitching_stats, args.projections)
+    averaged = average_projections(projections)
 
 if __name__ == '__main__':
     run()
