@@ -58,7 +58,7 @@ class Projection():
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
-            mapping[stat] = lambda x: x
+            mapping[stat] = lambda r: r[header_map[stat]]
         missing_stats = stats - headers
         for stat in missing_stats:
             # If can't find runs and this is a pitching file, then assume 8% of
