@@ -58,7 +58,7 @@ class Projection():
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
-            mapping[stat] = lambda r: r[header_map[stat]]
+            mapping[stat] = lambda r, s=stat: float(r[header_map[s]])
         missing_stats = stats - headers
         for stat in missing_stats:
             if stat == 'R':
@@ -66,16 +66,16 @@ class Projection():
                 # 8% of runs are unearned. If a batting file, then this is a
                 # rather crappy projection if runs are not included.
                 if self.is_pitching and 'ER' in headers:
-                    mapping[stat] = lambda r: r[header_map['ER']]*1.08
+                    mapping[stat] = lambda r: float(r[header_map['ER']])*1.08
             elif stat == 'NSB':
                 # If SB and CS are available, use that.
                 if 'SB' in headers and 'CS' in headers:
-                    mapping[stat] = lambda r: (r[header_map['SB']] -
-                                               r[header_map['CS']])
+                    mapping[stat] = lambda r: (int(r[header_map['SB']]) -
+                                               int(r[header_map['CS']]))
                 # If just SB available, then assume a 25% caught rate. This
                 # means a third of SB's will be 'lost'.
                 elif 'SB' in headers:
-                    mapping[stat] = lambda r: r[header_map['SB']]*0.333
+                    mapping[stat] = lambda r: int(r[header_map['SB']])*0.333
             else:
                 mapping[stat] = lambda r: None
         self.mapping = mapping
