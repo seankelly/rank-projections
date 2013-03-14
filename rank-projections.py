@@ -50,6 +50,11 @@ class Projection():
         file.
         """
         mapping = {}
+        # Create a stat => index mapping. This will be used in the mapping for
+        # missing stats.
+        header_map = {}
+        for i, stat in enumerate(row):
+            header_map[stat] = i
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
