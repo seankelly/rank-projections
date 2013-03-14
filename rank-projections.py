@@ -113,7 +113,14 @@ def load_projections(batting, pitching, files):
     return projections
 
 def average_projections(projections):
-    pass
+    # Classify the projections first.
+    pitchers = []
+    batters = []
+    for p in projections:
+        if p.is_batting:
+            batters.append(p)
+        elif p.is_pitching:
+            pitchers.append(p)
 
 def rank_players(batting, pitching, projections):
     pass
