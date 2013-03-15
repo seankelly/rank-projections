@@ -4,6 +4,7 @@ import argparse
 import csv
 import numpy as np
 from collections import defaultdict
+from itertools import chain
 
 
 class Projection():
@@ -168,12 +169,14 @@ def load_projections(batting, pitching, files):
         projections.append(Projection(file, batting, pitching))
     return projections
 
-def save_ranking(averaged, output_file):
+def save_ranking(averaged, output_file, batting, pitching):
     players = averaged.players
     ordered = sorted(players, key=lambda x: players[x]['rank'], reverse=True)
     csv_out = csv.writer(open(output_file, 'w'))
+    stats = list(chain(batting, pitching))
     for p in ordered:
-        row = [players[p]['name'], players[p]['rank']]
+        row = ([players[p]['name'], players[p]['rank']]
+               + map(lambda k: players[p].get(k, ''), stats))
         csv_out.writerow(row)
 
 
@@ -204,7 +207,7 @@ def run():
 
     projections = load_projections(batting_stats, pitching_stats, args.projections)
     averaged = Averaged(projections)
-    save_ranking(averaged, args.output)
+    save_ranking(averaged, args.output, batting_stats, pitching_stats)
 
 if __name__ == '__main__':
     run()
