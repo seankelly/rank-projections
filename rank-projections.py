@@ -137,15 +137,20 @@ class Averaged():
         self._average_projection(self.batter_proj,
                 self.batter_proj[0].batting)
         self._average_projection(self.pitcher_proj,
-                self.pitcher_proj[0].pitching)
+                self.pitcher_proj[0].pitching, True)
 
-    def _average_projection(self, projections, stats):
+    def _average_projection(self, projections, stats, pitching=False):
         final = defaultdict(lambda: defaultdict(lambda: []))
+        # For pitchers, certain stats are better the lower they are. List a few
+        # to reverse if this is for pitchers.
+        reverse_stats = set(['R', 'WHIP', 'ERA', 'BB'])
         for stat in stats:
             for proj in projections:
                 players = sorted(proj.players)
                 l = map(lambda p: proj.players[p][stat], players)
                 a = np.array(l)
+                if pitching and stat in reverse_stats:
+                    a = -a
                 sigma = np.std(a)
                 mu = np.mean(a)
                 zs = (a - mu)/sigma
