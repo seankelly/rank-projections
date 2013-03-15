@@ -175,8 +175,8 @@ def save_ranking(averaged, output_file, batting, pitching):
     csv_out = csv.writer(open(output_file, 'w'))
     stats = list(chain(batting, pitching))
     for p in ordered:
-        row = ([players[p]['name'], players[p]['rank']]
-               + map(lambda k: players[p].get(k, ''), stats))
+        row = ([players[p]['name'], ("%.4f" % players[p]['rank'])]
+               + map(lambda k: ("%.4f" % players[p].get(k, 0)), stats))
         csv_out.writerow(row)
 
 
