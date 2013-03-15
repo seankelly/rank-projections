@@ -2,6 +2,8 @@
 
 import argparse
 import csv
+import numpy as np
+from collections import defaultdict
 
 
 class Projection():
@@ -108,6 +110,7 @@ class Averaged():
         self.projections = projections
         self.batter = {}
         self.pitcher = {}
+        self.player = defaultdict(lambda: {})
         self._classify_projections()
         self._average()
 
@@ -126,15 +129,31 @@ class Averaged():
 
     def _average(self):
         self._average_projection(self.batter_proj,
-                self.batter_proj[0].batting_stats)
+                self.batter_proj[0].batting)
         self._average_projection(self.pitcher_proj,
-                self.pitcher_proj[0].pitching_stats)
+                self.pitcher_proj[0].pitching)
 
-    def _average_projection(self):
-        pass
-
-    def _average_players(self):
-        pass
+    def _average_projection(self, projections, stats):
+        final = defaultdict(lambda: defaultdict(lambda: []))
+        for stat in stats:
+            for proj in projections:
+                players = sorted(proj.players)
+                l = map(lambda p: proj.players[p][stat], players)
+                a = np.array(l)
+                sigma = np.std(a)
+                mu = np.mean(a)
+                zs = (a - mu)/sigma
+                for i, pl in enumerate(players):
+                    final[pl][stat].append(zs[i])
+        for pl in final:
+            if pl not in self.save_players:
+                continue
+            rating = 0
+            for stat in final[pl]:
+                r = np.mean(final[pl][stat])
+                self.player[pl][stat] = r
+                rating += r
+            self.player[pl]['_rank'] = rating
 
 
 def load_projections(batting, pitching, files):
