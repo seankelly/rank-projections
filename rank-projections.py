@@ -15,6 +15,10 @@ class Projection():
         self.id_column = None
         self._load_players()
 
+    def __iter__(self):
+        for p in self.players:
+            yield p
+
     def _load_players(self):
         is_batting, is_pitching = False, False
         in_body = False
@@ -115,6 +119,10 @@ class Averaged():
                 self.batter_proj.append(p)
             elif p.is_pitching:
                 self.pitcher_proj.append(p)
+        # Determine common subset of players projected.
+        reduce_fn = lambda x,y: set(x) & set(y)
+        self.save_players = (reduce(reduce_fn, self.batter_proj) |
+                             reduce(reduce_fn, self.pitcher_proj))
 
     def _average(self):
         self._average_projection(self.batter_proj,
