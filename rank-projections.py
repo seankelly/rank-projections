@@ -98,21 +98,42 @@ class Projection():
                 mapping[stat] = lambda r: None
         self.mapping = mapping
 
+
+class Averaged():
+    def __init__(self, projections):
+        self.projections = projections
+        self.batter = {}
+        self.pitcher = {}
+        self._classify_projections()
+        self._average()
+
+    def _classify_projections(self):
+        self.batter_proj = []
+        self.pitcher_proj = []
+        for p in self.projections:
+            if p.is_batting:
+                self.batter_proj.append(p)
+            elif p.is_pitching:
+                self.pitcher_proj.append(p)
+
+    def _average(self):
+        self._average_projection(self.batter_proj,
+                self.batter_proj[0].batting_stats)
+        self._average_projection(self.pitcher_proj,
+                self.pitcher_proj[0].pitching_stats)
+
+    def _average_projection(self):
+        pass
+
+    def _average_players(self):
+        pass
+
+
 def load_projections(batting, pitching, files):
     projections = []
     for file in files:
         projections.append(Projection(file, batting, pitching))
     return projections
-
-def average_projections(projections):
-    # Classify the projections first.
-    pitchers = []
-    batters = []
-    for p in projections:
-        if p.is_batting:
-            batters.append(p)
-        elif p.is_pitching:
-            pitchers.append(p)
 
 def rank_players(batting, pitching, projections):
     pass
@@ -143,7 +164,7 @@ def run():
         raise ValueError, "Pitching stats not specified."
 
     projections = load_projections(batting_stats, pitching_stats, args.projections)
-    averaged = average_projections(projections)
+    averaged = Averaged(projections)
 
 if __name__ == '__main__':
     run()
