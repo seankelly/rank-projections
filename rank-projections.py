@@ -111,7 +111,7 @@ class Averaged():
         self.projections = projections
         self.batter = {}
         self.pitcher = {}
-        self.player = defaultdict(lambda: {})
+        self.players = defaultdict(lambda: {})
         self._classify_projections()
         self._average()
 
@@ -156,9 +156,9 @@ class Averaged():
             rating = 0
             for stat in final[pl]:
                 r = np.mean(final[pl][stat])
-                self.player[pl][stat] = r
+                self.players[pl][stat] = r
                 rating += r
-            self.player[pl]['_rank'] = rating
+            self.players[pl]['rank'] = rating
             self.players[pl]['name'] = self.names[pl]
 
 
