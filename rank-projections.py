@@ -118,15 +118,19 @@ class Averaged():
     def _classify_projections(self):
         self.batter_proj = []
         self.pitcher_proj = []
+        names = {}
         for p in self.projections:
             if p.is_batting:
                 self.batter_proj.append(p)
             elif p.is_pitching:
                 self.pitcher_proj.append(p)
+            for pl in p:
+                names[pl] = p.players[pl]['name']
         # Determine common subset of players projected.
         reduce_fn = lambda x,y: set(x) & set(y)
         self.save_players = (reduce(reduce_fn, self.batter_proj) |
                              reduce(reduce_fn, self.pitcher_proj))
+        self.names = names
 
     def _average(self):
         self._average_projection(self.batter_proj,
@@ -155,6 +159,7 @@ class Averaged():
                 self.player[pl][stat] = r
                 rating += r
             self.player[pl]['_rank'] = rating
+            self.players[pl]['name'] = self.names[pl]
 
 
 def load_projections(batting, pitching, files):
