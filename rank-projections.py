@@ -168,8 +168,14 @@ def load_projections(batting, pitching, files):
         projections.append(Projection(file, batting, pitching))
     return projections
 
-def rank_players(batting, pitching, projections):
-    pass
+def save_ranking(averaged, output_file):
+    players = averaged.players
+    ordered = sorted(players, key=lambda x: players[x]['rank'], reverse=True)
+    csv_out = csv.writer(open(output_file, 'w'))
+    for p in ordered:
+        row = [players[p]['name'], players[p]['rank']]
+        csv_out.writerow(row)
+
 
 def get_options():
     parser = argparse.ArgumentParser(description="Average MLB projections "
@@ -198,6 +204,7 @@ def run():
 
     projections = load_projections(batting_stats, pitching_stats, args.projections)
     averaged = Averaged(projections)
+    save_ranking(averaged, args.output)
 
 if __name__ == '__main__':
     run()
