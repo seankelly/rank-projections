@@ -108,7 +108,7 @@ class Projection():
 
 
 class Averaged():
-    def __init__(self, projections):
+    def __init__(self, projections, playing_time):
         self.projections = projections
         self.batter = {}
         self.pitcher = {}
@@ -213,7 +213,7 @@ def run():
         raise ValueError, "Pitching stats not specified."
 
     projections = load_projections(batting_stats, pitching_stats, args.projections)
-    averaged = Averaged(projections)
+    averaged = Averaged(projections, args.playing_time)
     save_ranking(averaged, args.output, batting_stats, pitching_stats)
 
 if __name__ == '__main__':
