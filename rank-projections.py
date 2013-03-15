@@ -28,6 +28,7 @@ class Projection():
         for row in csv_file:
             if in_body:
                 self.players[row[id_col]] = self.map_stats(row)
+                self.players[row[id_col]]['name'] = row[0]
             else:
                 in_body = True
                 if not self._classify_file(row):
