@@ -88,9 +88,6 @@ class Projection():
         Generate a best-fit mapping for any stats missing from the projection
         file.
         """
-        # These stats should be divided by PA or IP and then multipled by the
-        # Fans' projection PA or IP.
-        counting_stats = set(['HR', 'NSB', 'R', 'RBI', 'SB', 'SO', 'SV', 'W'])
         mapping = {}
         # Create a stat => index mapping. This will be used in the mapping for
         # missing stats.
@@ -113,6 +110,9 @@ class Projection():
             d = float(row[divisor])
             return r / d * self.pt.get(p, d)
 
+        # These stats should be divided by PA or IP and then multipled by the
+        # Fans' projection PA or IP.
+        counting_stats = set(['HR', 'NSB', 'R', 'RBI', 'SB', 'SO', 'SV', 'W'])
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
