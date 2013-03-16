@@ -47,8 +47,9 @@ class Projection():
         csv_file = csv.reader(open(self.file))
         for row in csv_file:
             if in_body:
-                self.players[row[id_col]] = self.map_stats(row)
-                self.players[row[id_col]]['name'] = row[0]
+                player = row[id_col]
+                self.players[player] = self.map_stats(row, player)
+                self.players[player]['name'] = row[0]
             else:
                 in_body = True
                 if not self._classify_file(row):
@@ -56,14 +57,14 @@ class Projection():
                 # Set after the file has been classified.
                 id_col = self.id_column
 
-    def map_stats(self, row):
+    def map_stats(self, row, player):
         stats = {}
         if self.is_batting:
             stat_list = self.batting
         elif self.is_pitching:
             stat_list = self.pitching
         for stat in stat_list:
-            stats[stat] = self.mapping[stat](row)
+            stats[stat] = self.mapping[stat](row, player)
         return stats
 
 
@@ -87,6 +88,9 @@ class Projection():
         Generate a best-fit mapping for any stats missing from the projection
         file.
         """
+        # These stats should be divided by PA or IP and then multipled by the
+        # Fans' projection PA or IP.
+        counting_stats = set(['HR', 'NSB', 'R', 'RBI', 'SB', 'SO', 'SV', 'W'])
         mapping = {}
         # Create a stat => index mapping. This will be used in the mapping for
         # missing stats.
@@ -100,10 +104,23 @@ class Projection():
                 self.id_column = header_map[id_col]
                 break
 
+        # Determine ahead of time the divisor to use for counting stats.
+        if self.is_batting:
+            divisor = header_map['PA']
+        else:
+            divisor = header_map['IP']
+        def prorate(row, r, p):
+            d = float(row[divisor])
+            return r / d * self.pt.get(p, d)
+
         headers = set(row)
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
-            mapping[stat] = lambda r, s=stat: float(r[header_map[s]])
+            if stat in counting_stats:
+                mapping[stat] = lambda r, p, s=stat: float(r[header_map[s]])
+            else:
+                mapping[stat] = lambda row, p, s=stat: prorate(row,
+                                float(row[header_map[s]]), p)
         missing_stats = stats - headers
         for stat in missing_stats:
             if stat == 'R':
@@ -111,18 +128,21 @@ class Projection():
                 # 8% of runs are unearned. If a batting file, then this is a
                 # rather crappy projection if runs are not included.
                 if self.is_pitching and 'ER' in headers:
-                    mapping[stat] = lambda r: float(r[header_map['ER']])*1.08
+                    mapping[stat] = lambda row, p: prorate(row,
+                                float(row[header_map['ER']])*1.08, p)
             elif stat == 'NSB':
                 # If SB and CS are available, use that.
                 if 'SB' in headers and 'CS' in headers:
-                    mapping[stat] = lambda r: (int(r[header_map['SB']]) -
-                                               int(r[header_map['CS']]))
+                    mapping[stat] = lambda row, p: prorate(row,
+                                (int(row[header_map['SB']]) -
+                                 int(row[header_map['CS']])), p)
                 # If just SB available, then assume a 25% caught rate. This
                 # means a third of SB's will be 'lost'.
                 elif 'SB' in headers:
-                    mapping[stat] = lambda r: int(r[header_map['SB']])*0.333
+                    mapping[stat] = lambda row, p: prorate(row,
+                                int(row[header_map['SB']])*0.333, p)
             else:
-                mapping[stat] = lambda r: None
+                mapping[stat] = lambda row, p: None
         self.mapping = mapping
 
 
