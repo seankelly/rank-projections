@@ -8,7 +8,7 @@ from itertools import chain
 
 
 class Projection():
-    def __init__(self, file, batting, pitching):
+    def __init__(self, file, batting, pitching, playing_time):
         self.file = file
         self.batting = batting
         self.pitching = pitching
@@ -16,11 +16,30 @@ class Projection():
         self.is_batting = False
         self.is_pitching = False
         self.id_column = None
+        self._load_playing_time(playing_time)
         self._load_players()
 
     def __iter__(self):
         for p in self.players:
             yield p
+
+    def _load_playing_time(self, playing_time):
+        # Don't bother classifying the players. Just record their PA or IP.
+        player = {}
+        for pt_file in playing_time:
+            pt_csv = csv.reader(open(pt_file))
+            in_body = False
+            idx = None
+            for row in pt_csv:
+                if in_body:
+                    player[row[-1]] = float(row[idx])
+                else:
+                    in_body = True
+                    if 'IP' in row:
+                        idx = row.index('IP')
+                    elif 'PA' in row:
+                        idx = row.index('PA')
+        self.pt = player
 
     def _load_players(self):
         is_batting, is_pitching = False, False
@@ -108,32 +127,13 @@ class Projection():
 
 
 class Averaged():
-    def __init__(self, projections, playing_time):
+    def __init__(self, projections):
         self.projections = projections
         self.batter = {}
         self.pitcher = {}
         self.players = defaultdict(lambda: {})
-        self._load_playing_time(playing_time)
         self._classify_projections()
         self._average()
-
-    def _load_playing_time(self, playing_time):
-        # Don't bother classifying the players. Just record their PA or IP.
-        player = {}
-        for pt_file in playing_time:
-            pt_csv = csv.reader(open(pt_file))
-            in_body = False
-            idx = None
-            for row in pt_csv:
-                if in_body:
-                    player[row[-1]] = float(row[idx])
-                else:
-                    in_body = True
-                    if 'IP' in row:
-                        idx = row.index('IP')
-                    elif 'PA' in row:
-                        idx = row.index('PA')
-        self.pt = player
 
     def _classify_projections(self):
         self.batter_proj = []
@@ -187,10 +187,10 @@ class Averaged():
             self.players[pl]['name'] = self.names[pl]
 
 
-def load_projections(batting, pitching, files):
+def load_projections(batting, pitching, files, playing_time):
     projections = []
     for file in files:
-        projections.append(Projection(file, batting, pitching))
+        projections.append(Projection(file, batting, pitching, playing_time))
     return projections
 
 def save_ranking(averaged, output_file, batting, pitching):
@@ -231,8 +231,9 @@ def run():
     if pitching_stats is None:
         raise ValueError, "Pitching stats not specified."
 
-    projections = load_projections(batting_stats, pitching_stats, args.projections)
-    averaged = Averaged(projections, args.playing_time)
+    projections = load_projections(batting_stats, pitching_stats,
+            args.projections, args.playing_time)
+    averaged = Averaged(projections)
     save_ranking(averaged, args.output, batting_stats, pitching_stats)
 
 if __name__ == '__main__':
