@@ -117,10 +117,10 @@ class Projection():
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
             if stat in counting_stats:
-                mapping[stat] = lambda r, p, s=stat: float(r[header_map[s]])
-            else:
                 mapping[stat] = lambda row, p, s=stat: prorate(row,
                                 float(row[header_map[s]]), p)
+            else:
+                mapping[stat] = lambda r, p, s=stat: float(r[header_map[s]])
         missing_stats = stats - headers
         for stat in missing_stats:
             if stat == 'R':
