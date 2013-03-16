@@ -87,11 +87,12 @@ class Projection():
         Generate a best-fit mapping for any stats missing from the projection
         file.
         """
-        mapping = {}
         # Create a stat => index mapping. This will be used in the mapping for
         # missing stats.
         header_map = {}
+        headers = set()
         for i, stat in enumerate(row):
+            headers.add(stat)
             header_map[stat] = i
         # Try to find the column to use to identify players. When downloading
         # from FanGraphs, the playerid column is automatically added.
@@ -108,11 +109,13 @@ class Projection():
         def prorate(row, r, p):
             d = float(row[divisor])
             return r / d * self.pt.get(p, d)
+        self._make_map(prorate, stats, headers, header_map)
 
+    def _make_map(self, prorate, stats, headers, header_map):
         # These stats should be divided by PA or IP and then multipled by the
         # Fans' projection PA or IP.
         counting_stats = set(['HR', 'NSB', 'R', 'RBI', 'SB', 'SO', 'SV', 'W'])
-        headers = set(row)
+        mapping = {}
         # Start with a pass-through of stats that were found.
         for stat in (stats & headers):
             if stat in counting_stats:
