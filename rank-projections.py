@@ -113,8 +113,27 @@ class Averaged():
         self.batter = {}
         self.pitcher = {}
         self.players = defaultdict(lambda: {})
+        self._load_playing_time(playing_time)
         self._classify_projections()
         self._average()
+
+    def _load_playing_time(self, playing_time):
+        # Don't bother classifying the players. Just record their PA or IP.
+        player = {}
+        for pt_file in playing_time:
+            pt_csv = csv.reader(open(pt_file))
+            in_body = False
+            idx = None
+            for row in pt_csv:
+                if in_body:
+                    player[row[-1]] = float(row[idx])
+                else:
+                    in_body = True
+                    if 'IP' in row:
+                        idx = row.index('IP')
+                    elif 'PA' in row:
+                        idx = row.index('PA')
+        self.pt = player
 
     def _classify_projections(self):
         self.batter_proj = []
