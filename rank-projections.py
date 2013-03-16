@@ -67,7 +67,6 @@ class Projection():
             stats[stat] = self.mapping[stat](row, player)
         return stats
 
-
     def _classify_file(self, row):
         headers = set(row)
         num_batting = len(self.batting & headers)
