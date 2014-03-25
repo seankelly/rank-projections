@@ -246,12 +246,12 @@ def get_options():
 
 def run():
     args = get_options()
+    if args.batting is None:
+        raise ValueError, "Batting stats not specified."
+    if args.pitching is None:
+        raise ValueError, "Pitching stats not specified."
     batting_stats = set(args.batting.upper().split(','))
     pitching_stats = set(args.pitching.upper().split(','))
-    if batting_stats is None:
-        raise ValueError, "Batting stats not specified."
-    if pitching_stats is None:
-        raise ValueError, "Pitching stats not specified."
 
     projections = load_projections(batting_stats, pitching_stats,
             args.projections, args.playing_time)
