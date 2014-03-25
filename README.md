@@ -10,3 +10,9 @@ The `--batting` and `--pitching` options declare the stats to use for batters an
 Pass a filename to `--output` to save the rankings. The output format will be CSV.
 
 The `--playing-time` option is not required. It should be used for each separate playing time file (likely two). Any players found in these files will have their projected counting stats modified to account for the antipated playing time.
+
+## Examples
+    ./rank-projections.py -p IP,W,R,SO,WHIP -b R,HR,RBI,OBP,SLG,SB -o rank.csv -t data/2014\ Projections/player-time/Fans\ pitchers.csv -t data/2014\ Projections/player-time/Fans\ batters.csv data/2014\ Projections/\*.csv
+
+## Bugs
+* If a stat is used that is not present in all of the projections, a runtime error happens.
