@@ -45,6 +45,7 @@ class Projection():
         is_batting, is_pitching = False, False
         in_body = False
         csv_file = csv.reader(open(self.file))
+        id_col = None
         for row in csv_file:
             if in_body:
                 player = row[id_col]
