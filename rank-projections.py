@@ -169,7 +169,8 @@ class Averaged():
             for pl in p:
                 names[pl] = p.players[pl]['name']
         # Determine common subset of players projected.
-        reduce_fn = lambda x,y: set(x) & set(y)
+        def reduce_fn(x, y):
+            return set(x) & set(y)
         self.save_players = (reduce(reduce_fn, self.batter_proj) |
                              reduce(reduce_fn, self.pitcher_proj))
         self.names = names
