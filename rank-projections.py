@@ -42,7 +42,6 @@ class Projection():
         self.pt = player
 
     def _load_players(self):
-        is_batting, is_pitching = False, False
         in_body = False
         csv_file = csv.reader(open(self.file))
         id_col = None
