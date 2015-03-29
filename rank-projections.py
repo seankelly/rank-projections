@@ -177,9 +177,9 @@ class Averaged():
 
     def _average(self):
         self._average_projection(self.batter_proj,
-                self.batter_proj[0].batting)
+                                 self.batter_proj[0].batting)
         self._average_projection(self.pitcher_proj,
-                self.pitcher_proj[0].pitching, True)
+                                 self.pitcher_proj[0].pitching, True)
 
     def _average_projection(self, projections, stats, pitching=False):
         final = defaultdict(lambda: defaultdict(lambda: []))
@@ -231,7 +231,7 @@ def save_ranking(averaged, output_file, batting, pitching):
 
 def get_options():
     parser = argparse.ArgumentParser(description="Average MLB projections "
-                "and rank the players in given stats.")
+                                     "and rank the players in given stats.")
     parser.add_argument('-o', '--output',
                         help='Save ranked players')
     parser.add_argument('-b', '--batting',
@@ -255,7 +255,7 @@ def run():
     pitching_stats = set(args.pitching.upper().split(','))
 
     projections = load_projections(batting_stats, pitching_stats,
-            args.projections, args.playing_time)
+                                   args.projections, args.playing_time)
     averaged = Averaged(projections)
     save_ranking(averaged, args.output, batting_stats, pitching_stats)
 
