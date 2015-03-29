@@ -78,7 +78,7 @@ class Projection():
             self.is_pitching = True
             self._create_mapping(self.pitching, row)
         else:
-            print("Unable to determine how to parse {0}".format(self.file))
+            print "Unable to determine how to parse {0}".format(self.file)
             return False
         return True
 
@@ -117,7 +117,7 @@ class Projection():
         counting_stats = set(['HR', 'NSB', 'R', 'RBI', 'SB', 'SO', 'SV', 'W'])
         mapping = {}
         # Start with a pass-through of stats that were found.
-        for stat in (stats & headers):
+        for stat in stats & headers:
             if stat in counting_stats:
                 mapping[stat] = lambda row, p, s=stat: prorate(row,
                                 float(row[header_map[s]]), p)
