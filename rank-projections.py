@@ -171,8 +171,8 @@ class Averaged():
         # Determine common subset of players projected.
         def reduce_fn(x, y):
             return set(x) & set(y)
-        self.save_players = (reduce(reduce_fn, self.batter_proj) |
-                             reduce(reduce_fn, self.pitcher_proj))
+        self.save_players = (set(reduce(reduce_fn, self.batter_proj)) |
+                             set(reduce(reduce_fn, self.pitcher_proj)))
         self.names = names
 
     def _average(self):
