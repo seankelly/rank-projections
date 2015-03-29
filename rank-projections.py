@@ -189,7 +189,7 @@ class Averaged():
         for stat in stats:
             for proj in projections:
                 players = sorted(proj.players)
-                l = map(lambda p: proj.players[p][stat], players)
+                l = [proj.players[p][stat] for p in players]
                 a = np.array(l)
                 if pitching and stat in reverse_stats:
                     a = -a
@@ -225,7 +225,7 @@ def save_ranking(averaged, output_file, batting, pitching):
     csv_out.writerow(['Name', 'Rank'] + stats)
     for p in ordered:
         row = ([players[p]['name'], ("%.4f" % players[p]['rank'])]
-               + map(lambda k: ("%.4f" % players[p].get(k, 0)), stats))
+               + ["%.4f" % players[p].get(k, 0) for k in stats])
         csv_out.writerow(row)
 
 
