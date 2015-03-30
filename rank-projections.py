@@ -151,15 +151,15 @@ class Projection():
 class Averaged():
     def __init__(self, projections):
         self.projections = projections
-        self.batter = {}
-        self.pitcher = {}
         self.players = defaultdict(lambda: {})
+        self.batter_proj = []
+        self.pitcher_proj = []
+        self.save_players = None
+        self.names = None
         self._classify_projections()
         self._average()
 
     def _classify_projections(self):
-        self.batter_proj = []
-        self.pitcher_proj = []
         names = {}
         for p in self.projections:
             if p.is_batting:
