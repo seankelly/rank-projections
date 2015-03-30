@@ -8,8 +8,8 @@ from itertools import chain
 
 
 class Projection():
-    def __init__(self, file, batting, pitching, playing_time):
-        self.file = file
+    def __init__(self, projection_file, batting, pitching, playing_time):
+        self.file = projection_file
         self.batting = batting
         self.pitching = pitching
         self.players = {}
