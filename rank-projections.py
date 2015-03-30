@@ -249,9 +249,9 @@ def get_options():
 def run():
     args = get_options()
     if args.batting is None:
-        raise ValueError, "Batting stats not specified."
+        raise ValueError("Batting stats not specified.")
     if args.pitching is None:
-        raise ValueError, "Pitching stats not specified."
+        raise ValueError("Pitching stats not specified.")
     batting_stats = set(args.batting.upper().split(','))
     pitching_stats = set(args.pitching.upper().split(','))
 
