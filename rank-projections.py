@@ -211,9 +211,8 @@ class Averaged():
 
 
 def load_projections(batting, pitching, files, playing_time):
-    projections = []
-    for file in files:
-        projections.append(Projection(file, batting, pitching, playing_time))
+    projections = [Projection(projection_file, batting, pitching, playing_time)
+                   for projection_file in files]
     return projections
 
 def save_ranking(averaged, output_file, batting, pitching):
