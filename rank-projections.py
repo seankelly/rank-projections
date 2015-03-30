@@ -16,6 +16,8 @@ class Projection():
         self.is_batting = False
         self.is_pitching = False
         self.id_column = None
+        self.pt = None
+        self.mapping = None
         self._load_playing_time(playing_time)
         self._load_players()
 
